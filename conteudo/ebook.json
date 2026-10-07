@@ -1,0 +1,549 @@
+{
+  "titulo": "Do dado à decisão",
+  "subtitulo": "Ciência de dados aplicada à atuária: um guia prático com Python",
+  "autor": "Paulo Bernardo",
+  "edicao": "Outubro de 2026",
+  "secoes": [
+    {
+      "titulo": "Um guia para começar",
+      "kicker": "COMECE AQUI",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "Este guia mostra como transformar uma pergunta de negócio em uma análise descritiva de risco. Com uma carteira fictícia, você vai calcular indicadores, comparar grupos e explicar os resultados."
+        },
+        {
+          "tipo": "p",
+          "texto": "Para estudantes e profissionais iniciantes. Os exemplos usam operações básicas e incluem código Python reproduzível. Leia a sequência completa ou consulte os capítulos pelo sumário."
+        },
+        {
+          "tipo": "sumario"
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "O que você vai produzir",
+          "texto": "Uma análise de frequência, severidade e custo por exposição, com código e interpretação."
+        }
+      ]
+    },
+    {
+      "titulo": "Escreva uma pergunta útil",
+      "kicker": "01 / PROBLEMA",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "Antes de abrir uma base, defina a decisão que a análise pretende apoiar. Uma pergunta ampla, como “qual grupo tem mais risco?”, mistura fenômenos diferentes. Quantidade de ocorrências, custo médio e volume de exposição precisam ser considerados separadamente."
+        },
+        {
+          "tipo": "h",
+          "texto": "A pergunta deste projeto"
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Pergunta central",
+          "texto": "Como o custo observado por contrato-ano varia entre quatro segmentos de uma carteira fictícia, durante o mesmo período?"
+        },
+        {
+          "tipo": "p",
+          "texto": "Essa pergunta define a unidade de comparação, o período e o indicador. Primeiro descrevemos o histórico. Uma previsão exigiria hipóteses e uma avaliação adicional."
+        },
+        {
+          "tipo": "bullets",
+          "itens": [
+            "Qual é o período observado?",
+            "Os grupos têm a mesma definição de sinistro e de custo?",
+            "A exposição está medida de forma comparável?",
+            "Que informação falta para explicar as diferenças?"
+          ]
+        },
+        {
+          "tipo": "h",
+          "texto": "Transforme a pergunta em uma entrega"
+        },
+        {
+          "tipo": "p",
+          "texto": "Uma entrega pequena pode conter uma tabela, um gráfico e três frases: o principal resultado, a hipótese que sustenta a comparação e a limitação que o leitor precisa conhecer. Esse formato facilita a conversa entre quem analisa e quem decide."
+        }
+      ]
+    },
+    {
+      "titulo": "Três indicadores, três unidades",
+      "kicker": "02 / CONCEITOS",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "Use E para exposição, N para quantidade de sinistros e C para o custo total associado a esses sinistros. No caso do guia, exposição é o tempo de cobertura somado, em contratos-ano. Dois contratos ativos por meio ano equivalem a um contrato-ano."
+        },
+        {
+          "tipo": "formula",
+          "texto": "Frequência = N / E",
+          "unidade": "Sinistros por contrato-ano"
+        },
+        {
+          "tipo": "formula",
+          "texto": "Severidade = C / N",
+          "unidade": "Reais por sinistro, quando N > 0"
+        },
+        {
+          "tipo": "formula",
+          "texto": "Custo por exposição = C / E",
+          "unidade": "Reais por contrato-ano"
+        },
+        {
+          "tipo": "p",
+          "texto": "Quando N > 0, multiplicar frequência por severidade também resulta em C / E. Essa é uma identidade entre os indicadores observados. As definições são compatíveis com o exemplo de seguros da referência [1]."
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Frequência não é automaticamente probabilidade",
+          "texto": "Uma pessoa ou contrato pode registrar mais de um sinistro. A razão N / E é uma taxa de ocorrências por exposição, não uma porcentagem de pessoas afetadas."
+        },
+        {
+          "tipo": "p",
+          "texto": "Se não há sinistros, a severidade observada fica indefinida. Com N = 0 e C = 0, o custo por exposição é zero, mas isso não demonstra ausência de risco futuro."
+        }
+      ]
+    },
+    {
+      "titulo": "Conheça a carteira fictícia",
+      "kicker": "03 / BASE DE DADOS",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "Os quatro registros abaixo foram criados para este projeto. Todos representam um período comum. O custo de cada segmento está inteiramente apurado e corresponde aos sinistros contabilizados na mesma linha."
+        },
+        {
+          "tipo": "dataset"
+        },
+        {
+          "tipo": "h",
+          "texto": "Dicionário dos campos"
+        },
+        {
+          "tipo": "bullets",
+          "itens": [
+            "segmento: identificação fictícia do grupo, de A a D.",
+            "exposicao_contratos_ano: soma do tempo coberto, em contratos-ano.",
+            "sinistros: quantidade de ocorrências contabilizadas.",
+            "custo_total: custo associado às ocorrências, em reais."
+          ]
+        },
+        {
+          "tipo": "p",
+          "texto": "No arquivo JSON, os valores monetários são textos com ponto decimal, como “100000.00”. O script usa Decimal para realizar as operações sem passar pelo tipo float. Os números da edição em português usam vírgula decimal e ponto para separar milhares."
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Escopo do exemplo",
+          "texto": "A base está agregada por segmento. Ela permite cálculos descritivos; não contém o histórico individual necessário para estudar diferenças entre contratos."
+        }
+      ]
+    },
+    {
+      "titulo": "Valide antes de calcular",
+      "kicker": "04 / QUALIDADE",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "Um indicador pode estar aritmeticamente correto e ainda responder à pergunta errada. Antes do cálculo, confira a estrutura da base e o significado de cada variável. A validação técnica complementa a revisão das regras do negócio."
+        },
+        {
+          "tipo": "h",
+          "texto": "O que o script verifica"
+        },
+        {
+          "tipo": "bullets",
+          "itens": [
+            "Todos os registros têm os quatro campos obrigatórios.",
+            "Os rótulos dos segmentos são textos não vazios e únicos após padronização.",
+            "A exposição é positiva e os valores numéricos são finitos.",
+            "O número de sinistros é um inteiro não negativo.",
+            "O custo é não negativo. Neste caso, custo positivo requer sinistros contabilizados."
+          ]
+        },
+        {
+          "tipo": "h",
+          "texto": "O que ainda depende de revisão"
+        },
+        {
+          "tipo": "p",
+          "texto": "O arquivo não prova que os períodos, as coberturas ou os critérios de apuração são comparáveis. Essa informação precisa acompanhar a coleta e a documentação. Também é preciso distinguir um registro duplicado de dois registros legítimos de períodos diferentes."
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Uma regra útil",
+          "texto": "Não substitua automaticamente um valor ausente por zero. Ausência de informação e ausência de ocorrência têm significados diferentes."
+        },
+        {
+          "tipo": "p",
+          "texto": "Neste projeto, uma inconsistência interrompe a análise com uma mensagem. Isso torna a correção explícita e evita que um dado inválido desapareça silenciosamente."
+        }
+      ]
+    },
+    {
+      "titulo": "Calcule o segmento A",
+      "kicker": "05 / EXEMPLO RESOLVIDO",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "O segmento A tem 1.000 contratos-ano, 20 sinistros e custo total de R$ 100.000. Vamos usar a mesma linha para calcular os três indicadores."
+        },
+        {
+          "tipo": "formula",
+          "texto": "20 / 1.000 = 0,02",
+          "unidade": "Frequência: 0,02 sinistro por contrato-ano"
+        },
+        {
+          "tipo": "p",
+          "texto": "Outra forma de apresentar o resultado é dizer que foram observados dois sinistros a cada cem contratos-ano."
+        },
+        {
+          "tipo": "formula",
+          "texto": "100.000 / 20 = 5.000",
+          "unidade": "Severidade: R$ 5.000 por sinistro"
+        },
+        {
+          "tipo": "p",
+          "texto": "Esse valor resume o custo médio das ocorrências. Não informa o custo de cada sinistro individual, que poderia variar bastante."
+        },
+        {
+          "tipo": "formula",
+          "texto": "100.000 / 1.000 = 100",
+          "unidade": "Custo por exposição: R$ 100 por contrato-ano"
+        },
+        {
+          "tipo": "p",
+          "texto": "A conferência pela identidade dá o mesmo resultado: 0,02 × R$ 5.000 = R$ 100 por contrato-ano."
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Como interpretar",
+          "texto": "No período e nas condições do exemplo, o grupo A apresentou esse custo médio por exposição. O cálculo é histórico e não constitui o preço comercial de um seguro."
+        }
+      ]
+    },
+    {
+      "titulo": "Compare grupos com cuidado",
+      "kicker": "06 / VISUALIZAÇÃO",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "Compare os quatro grupos com as mesmas unidades. “Sin./100” indica sinistros a cada cem contratos-ano."
+        },
+        {
+          "tipo": "indicadores"
+        },
+        {
+          "tipo": "grafico",
+          "arquivo": "assets/custo_por_exposicao.png"
+        },
+        {
+          "tipo": "p",
+          "texto": "Neste caso, D tem o maior custo por exposição. A linha tracejada indica o valor ponderado da carteira, explicado na próxima página."
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Uma diferença pede investigação",
+          "texto": "Observe também a quantidade de sinistros, o volume de exposição e a composição do grupo. O gráfico descreve os registros; não identifica sozinho a causa da diferença."
+        }
+      ]
+    },
+    {
+      "titulo": "A carteira pede ponderação",
+      "kicker": "07 / AGREGAÇÃO",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "Os segmentos têm tamanhos diferentes. Para calcular o indicador da carteira, some primeiro os custos e as exposições. Assim, cada contrato-ano tem o mesmo peso no resultado final."
+        },
+        {
+          "tipo": "totais"
+        },
+        {
+          "tipo": "formula",
+          "texto": "512.000 / 3.400 = 150,588235...",
+          "unidade": "Custo por exposição da carteira: R$ 150,59"
+        },
+        {
+          "tipo": "p",
+          "texto": "A média simples dos quatro indicadores seria (100 + 225 + 60 + 400) / 4 = R$ 196,25. Nesse cálculo, cada segmento recebe o mesmo peso, embora represente uma parcela diferente da exposição."
+        },
+        {
+          "tipo": "p",
+          "texto": "A média ponderada equivale a (1.000 × 100 + 800 × 225 + 1.200 × 60 + 400 × 400) / 3.400. Ela reproduz a razão entre o custo total e a exposição total."
+        },
+        {
+          "tipo": "h",
+          "texto": "Confira também os outros totais"
+        },
+        {
+          "tipo": "p",
+          "texto": "Frequência: 72 / 3.400 = aproximadamente 0,021176 sinistro por contrato-ano. Severidade: R$ 512.000 / 72 = aproximadamente R$ 7.111,11 por sinistro."
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Escolha o peso pela pergunta",
+          "texto": "O custo por exposição usa exposição como peso. A severidade total usa a quantidade de sinistros. Uma média de médias só é apropriada quando seus pesos fazem sentido para a medida desejada."
+        }
+      ]
+    },
+    {
+      "titulo": "Reproduza em Python",
+      "kicker": "08 / CÓDIGO",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "Depois de extrair o pacote, abra um terminal na pasta do projeto. O script completo executa as validações da página 6 e grava os resultados em output/analise_resultados.json."
+        },
+        {
+          "tipo": "codigo",
+          "texto": "python scripts/analisar_carteira.py",
+          "curto": true
+        },
+        {
+          "tipo": "p",
+          "texto": "O trecho abaixo mostra o cálculo da carteira e pressupõe a base já validada. Ele usa somente módulos da biblioteca padrão do Python [3, 4]."
+        },
+        {
+          "tipo": "codigo",
+          "texto": "import json\nfrom decimal import Decimal as D\nfrom pathlib import Path\n\nbase = Path(\"dados/carteira_sintetica.json\")\nlinhas = json.loads(base.read_text(encoding=\"utf-8\"))\n\ne = sum(D(str(r[\"exposicao_contratos_ano\"]))\n        for r in linhas)\nn = sum(r[\"sinistros\"] for r in linhas)\nc = sum(D(r[\"custo_total\"]) for r in linhas)\n\nfrequencia = D(n) / e\nseveridade = c / D(n)\ncusto_por_exposicao = c / e\n\nprint(f\"Frequência: {frequencia:.6f}\")\nprint(f\"Severidade: R$ {severidade:.2f}\")\nprint(f\"Custo/exposição: R$ {custo_por_exposicao:.2f}\")"
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Saída esperada",
+          "texto": "Frequência: 0.021176; severidade: R$ 7111.11; custo/exposição: R$ 150.59. O terminal usa ponto decimal; o livro apresenta os mesmos valores com formatação brasileira."
+        }
+      ]
+    },
+    {
+      "titulo": "Explique o resultado e o limite",
+      "kicker": "09 / INTERPRETAÇÃO",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "Uma boa síntese começa pelo que foi observado e indica o que ainda precisa ser investigado. No exemplo, a carteira apresentou R$ 150,59 por contrato-ano, e o segmento D teve o maior valor entre os quatro grupos."
+        },
+        {
+          "tipo": "h",
+          "texto": "Um exemplo de comunicação"
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Síntese para apresentação",
+          "texto": "“Na carteira fictícia, o custo observado foi de R$ 150,59 por contrato-ano. O segmento D ficou acima do total. Para explicar a diferença, seria necessário revisar a composição dos grupos, a quantidade de sinistros e os critérios de apuração.”"
+        },
+        {
+          "tipo": "h",
+          "texto": "Perguntas para aprofundar"
+        },
+        {
+          "tipo": "bullets",
+          "itens": [
+            "Os contratos têm coberturas e limites semelhantes?",
+            "Há poucos sinistros de alto custo concentrados em um grupo?",
+            "O período é representativo ou houve uma ocorrência excepcional?",
+            "Os custos estão suficientemente apurados para a comparação?"
+          ]
+        },
+        {
+          "tipo": "p",
+          "texto": "Os quatro totais agregados não permitem medir a variabilidade entre sinistros individuais, separar fatores explicativos ou comprovar uma relação causal. Registrar essa limitação ajuda o leitor a usar o resultado na medida certa."
+        },
+        {
+          "tipo": "p",
+          "texto": "Para avançar, seria necessário obter dados mais detalhados e comparáveis, mantendo a documentação das definições e da origem de cada campo."
+        }
+      ]
+    },
+    {
+      "titulo": "Separe descrição de previsão",
+      "kicker": "10 / PRÓXIMOS PASSOS",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "Descrever o histórico e prever o futuro são tarefas diferentes. No primeiro caso, calculamos razões entre valores observados. No segundo, buscamos estimar um resultado ainda não conhecido e precisamos avaliar o erro dessa estimativa."
+        },
+        {
+          "tipo": "h",
+          "texto": "Um processo mínimo de avaliação"
+        },
+        {
+          "tipo": "bullets",
+          "itens": [
+            "Defina o alvo e as informações disponíveis na data da previsão.",
+            "Separe dados de desenvolvimento e avaliação antes de aprender transformações.",
+            "Escolha uma forma de divisão compatível com o período e com registros repetidos.",
+            "Compare o modelo a uma referência simples e examine seus erros."
+          ]
+        },
+        {
+          "tipo": "p",
+          "texto": "Vazamento de dados ocorre quando a construção do modelo utiliza informação que não estaria disponível na previsão. Isso pode produzir uma avaliação otimista [2]."
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Neste projeto",
+          "texto": "Não ajustamos um modelo preditivo: há apenas quatro linhas agregadas. O objetivo é aprender indicadores, ponderação e reprodução de uma análise descritiva."
+        },
+        {
+          "tipo": "p",
+          "texto": "Uma projeção simples pode usar uma frequência histórica como hipótese. Se as condições mudarem, essa hipótese precisa ser revista. Mesmo quando a estimativa parece razoável, o resultado realizado continuará sujeito à incerteza."
+        }
+      ]
+    },
+    {
+      "titulo": "Use IA com uma tarefa clara",
+      "kicker": "11 / PROMPTS",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "A IA pode ajudar a organizar explicações, propor uma estrutura e escrever uma primeira versão de código. Para obter uma resposta útil, descreva a tarefa, os dados, as restrições e o formato esperado. Depois confira o resultado com os valores do caso."
+        },
+        {
+          "tipo": "h",
+          "texto": "Um prompt para revisar a análise"
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Exemplo aplicado",
+          "texto": "“Revise os indicadores de uma carteira fictícia com quatro segmentos. Confira se o total usa somas de custos e exposição. Explique a diferença entre frequência e probabilidade. Não apresente o custo histórico como preço comercial. Liste os pontos a corrigir.”"
+        },
+        {
+          "tipo": "h",
+          "texto": "Como os prompts foram organizados"
+        },
+        {
+          "tipo": "bullets",
+          "itens": [
+            "01: título, público e estrutura do e-book.",
+            "02: conteúdo e caso numérico.",
+            "03: revisão das unidades e dos resultados.",
+            "04: briefing de diagramação.",
+            "05: artigo e documentação do repositório."
+          ]
+        },
+        {
+          "tipo": "p",
+          "texto": "O roteiro editorial, o código e os textos foram preparados com apoio de IA. O PDF foi montado com ReportLab, o gráfico foi produzido com Matplotlib e a capa usa elementos vetoriais. As ferramentas efetivamente usadas estão documentadas no README."
+        },
+        {
+          "tipo": "p",
+          "texto": "Os prompts completos fazem parte do repositório, para que o processo possa ser entendido, revisado e adaptado."
+        }
+      ]
+    },
+    {
+      "titulo": "Pratique e confira",
+      "kicker": "12 / EXERCÍCIOS",
+      "blocos": [
+        {
+          "tipo": "h",
+          "texto": "1. Um novo segmento"
+        },
+        {
+          "tipo": "p",
+          "texto": "Um grupo fictício apresenta 500 contratos-ano, 10 sinistros e custo total de R$ 60.000. Calcule frequência, severidade e custo por exposição."
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Resposta 1",
+          "texto": "Frequência = 10 / 500 = 0,02 sinistro por contrato-ano. Severidade = R$ 60.000 / 10 = R$ 6.000 por sinistro. Custo por exposição = R$ 60.000 / 500 = R$ 120 por contrato-ano."
+        },
+        {
+          "tipo": "h",
+          "texto": "2. Uma hipótese para o próximo período"
+        },
+        {
+          "tipo": "p",
+          "texto": "Se a frequência de A fosse mantida em 0,02 e a exposição futura fosse de 2.000 contratos-ano, qual seria o número esperado de sinistros?"
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Resposta 2",
+          "texto": "2.000 × 0,02 = 40 sinistros esperados, sob a hipótese de manutenção da frequência. Esperado não significa garantido."
+        },
+        {
+          "tipo": "h",
+          "texto": "3. A média da carteira"
+        },
+        {
+          "tipo": "p",
+          "texto": "Por que R$ 196,25 não representa o custo por exposição da carteira original?"
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Resposta 3",
+          "texto": "Esse número dá o mesmo peso a cada segmento. A carteira exige ponderação pela exposição: R$ 512.000 / 3.400 = R$ 150,59 por contrato-ano."
+        },
+        {
+          "tipo": "p",
+          "texto": "Para uma extensão, altere um valor no JSON, execute novamente o script e explique o efeito nos indicadores. Atualize o texto e os gráficos antes de publicar uma nova edição do e-book."
+        }
+      ]
+    },
+    {
+      "titulo": "Fontes e termos essenciais",
+      "kicker": "REFERÊNCIAS",
+      "blocos": [
+        {
+          "tipo": "p",
+          "texto": "Os valores e as conclusões numéricas deste guia foram criados para o caso fictício. As fontes abaixo sustentam os conceitos e documentam as ferramentas. Consulta em 7 de outubro de 2026."
+        },
+        {
+          "tipo": "referencias"
+        },
+        {
+          "tipo": "h",
+          "texto": "Glossário de bolso"
+        },
+        {
+          "tipo": "bullets",
+          "itens": [
+            "Exposição: volume de cobertura, considerando o tempo observado.",
+            "Frequência: quantidade de sinistros por unidade de exposição.",
+            "Severidade: custo médio por sinistro contabilizado.",
+            "Ponderação: escolha de pesos adequados à medida agregada.",
+            "Reprodução: obtenção dos mesmos resultados a partir dos arquivos e do código."
+          ]
+        },
+        {
+          "tipo": "callout",
+          "rotulo": "Sobre esta edição",
+          "texto": "Projeto educacional de Paulo Bernardo, estudante de Ciências Atuariais, desenvolvido com apoio de inteligência artificial. O material descreve um caso sintético para estudo e portfólio."
+        }
+      ]
+    }
+  ],
+  "referencias": [
+    {
+      "id": 1,
+      "titulo": "scikit-learn: Tweedie regression on insurance claims",
+      "url": "https://scikit-learn.org/stable/auto_examples/linear_model/plot_tweedie_regression_insurance_claims.html",
+      "nota": "Definições de frequência, severidade e custo por exposição."
+    },
+    {
+      "id": 2,
+      "titulo": "scikit-learn: Common pitfalls and recommended practices",
+      "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+      "nota": "Separação de dados e prevenção de vazamento de informação."
+    },
+    {
+      "id": 3,
+      "titulo": "Python: módulo json",
+      "url": "https://docs.python.org/3/library/json.html",
+      "nota": "Leitura e gravação dos arquivos estruturados."
+    },
+    {
+      "id": 4,
+      "titulo": "Python: módulo decimal",
+      "url": "https://docs.python.org/3/library/decimal.html",
+      "nota": "Aritmética decimal utilizada no script."
+    },
+    {
+      "id": 5,
+      "titulo": "Felipe Aguiar: projeto de referência da DIO",
+      "url": "https://github.com/felipeAguiarCode/prompts-recipe-to-create-a-ebook",
+      "nota": "Inspiração para o fluxo de criação do e-book com prompts."
+    }
+  ]
+}

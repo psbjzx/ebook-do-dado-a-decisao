@@ -1,0 +1,6 @@
+[
+  {"segmento": "A", "exposicao_contratos_ano": 1000, "sinistros": 20, "custo_total": "100000.00"},
+  {"segmento": "B", "exposicao_contratos_ano": 800, "sinistros": 24, "custo_total": "180000.00"},
+  {"segmento": "C", "exposicao_contratos_ano": 1200, "sinistros": 12, "custo_total": "72000.00"},
+  {"segmento": "D", "exposicao_contratos_ano": 400, "sinistros": 16, "custo_total": "160000.00"}
+]

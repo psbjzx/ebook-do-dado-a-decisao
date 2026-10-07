@@ -1,0 +1,50 @@
+{
+  "natureza_dados": "Sintéticos, com período comum e custos em reais.",
+  "por_segmento": [
+    {
+      "segmento": "A",
+      "exposicao_contratos_ano": "1000",
+      "sinistros": 20,
+      "custo_total": "100000.00",
+      "frequencia": "0.02000000",
+      "severidade": "5000.00",
+      "custo_por_exposicao": "100.00"
+    },
+    {
+      "segmento": "B",
+      "exposicao_contratos_ano": "800",
+      "sinistros": 24,
+      "custo_total": "180000.00",
+      "frequencia": "0.03000000",
+      "severidade": "7500.00",
+      "custo_por_exposicao": "225.00"
+    },
+    {
+      "segmento": "C",
+      "exposicao_contratos_ano": "1200",
+      "sinistros": 12,
+      "custo_total": "72000.00",
+      "frequencia": "0.01000000",
+      "severidade": "6000.00",
+      "custo_por_exposicao": "60.00"
+    },
+    {
+      "segmento": "D",
+      "exposicao_contratos_ano": "400",
+      "sinistros": 16,
+      "custo_total": "160000.00",
+      "frequencia": "0.04000000",
+      "severidade": "10000.00",
+      "custo_por_exposicao": "400.00"
+    }
+  ],
+  "carteira": {
+    "exposicao_contratos_ano": "3400",
+    "sinistros": 72,
+    "custo_total": "512000.00",
+    "frequencia": "0.02117647",
+    "severidade": "7111.11",
+    "custo_por_exposicao": "150.59"
+  },
+  "media_simples_segmentos": "196.25"
+}
