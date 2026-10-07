@@ -14,7 +14,7 @@ código reproduzível e documentação dos prompts.
 ## E-book e artigo
 
 - [Leia o e-book completo em PDF](output/Do_Dado_a_Decisao.pdf).
-- [Leia o artigo: Como criei um e-book de dados e atuária com apoio de IA](artigo/Como_Criei_o_Ebook.md).
+- [Leia o artigo: Como criei um e-book de dados e atuária com apoio de IA](https://github.com/psbjzx/ebook-do-dado-a-decisao)
 - [Consulte o conteúdo editável em Markdown](conteudo/ebook.md).
 
 O link do artigo acima abre o texto incluído neste repositório. Após
